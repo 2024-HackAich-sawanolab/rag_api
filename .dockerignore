@@ -1,0 +1,15 @@
+.git/
+**/__pycache__/
+**/.mypy_cache/
+**/.ruff_cache/
+**/.pytest_cache/
+**/dist/
+**/*.ipynb
+**/.ipynb_checkpoints/
+**/.chroma
+**/.sentence_transformers
+**/.vscode
+Dockerfile
+docker-compose.yaml
+.venv
+.github/
