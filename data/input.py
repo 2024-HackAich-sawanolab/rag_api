@@ -1,13 +1,12 @@
 import csv
 import requests
 import json
-import uuid
 
 # 入力CSVファイルの名前を指定
-csv_file = 'output.csv'
+csv_file = './keyword.csv'
 
 # POSTリクエストを送信するURLを指定
-url = 'http://localhost:8889/v1/collections/my_collection/upsert'
+url = 'http://localhost:8889/v1/collections/my_collection/upsert/not_use_gpt'
 
 # ヘッダー情報を指定
 headers = {
@@ -19,26 +18,22 @@ with open(csv_file, 'r', encoding='utf-8-sig') as file:
     reader = csv.DictReader(file)
     for row in reader:
         id_value = row['管理NO']
-        inquiry = row['問合せ内容']
-        answer = row['回答内容']
+        keyword = row['キーワード']
 
-        # "input"フィールドを作成
-        input_text = f"{inquiry}: {answer}"
-
-        # ペイロードを作成
-        uuid_4 = str(uuid.uuid4())
         payload = {
-            "id": uuid_4,
+            "id": id_value,
             "metadata": {"key": "value"},
-            "input": input_text
+            "input": keyword,
+            "use_gpt": False,
         }
 
+        print(f"Upserting ID {id_value} with keyword {keyword}")
+
         # POSTリクエストを送信
-        response = requests.post(url, headers=headers, data=json.dumps(payload))
+        response = requests.post(url, headers=headers, json=payload)
 
         # レスポンスのステータスコードをチェック
         if response.status_code == 200:
-            print(f"ID {uuid_4} のデータを正常に送信しました。")
+            print(f"ID {id_value} was successfully upserted.")
         else:
-            print(f"ID {uuid_4} のデータ送信に失敗しました。ステータスコード: {response.status_code}")
-            print(f"レスポンス内容: {response.text}")
+            print(f"Failed to upsert ID {id_value}: {response.status_code}, {response.text}")

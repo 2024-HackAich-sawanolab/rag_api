@@ -39,3 +39,12 @@ services:
       - 8889:8889
     depends_on:
       - db
+
+networks:
+  default:
+    external:
+      name: bridge
+  fastapi_network:
+    name: fastapi_network
+    driver: bridge
+    external: true

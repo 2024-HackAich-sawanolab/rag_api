@@ -71,6 +71,51 @@ async def upsert_point(
     return request
 
 
+@router.post(
+    "/{collection_name}/upsert/not_use_gpt",
+    name="not_use_gpt_upsert_point",
+)
+async def not_use_gpt_upsert_point(
+    collection_name: str,
+    request: CollectionPointRequest,
+    client: StoreClient,
+):
+    """Create a new collection with the given name and dimension."""
+    collection = await get_collection(collection_name, client)
+
+    if request.embedding is None and request.input is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Must provide either embedding or input",
+        )
+    elif request.embedding is None:
+        try:
+            embedder = get_embedder(model_name=request.model)
+            request.embedding = embedder.encode(request.input).tolist()
+        except ValueError as e:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Invalid model name {request.model} please use a SentenceTransformer compatible model (e.g. DEFAULT_EMBEDDING_MODEL)",
+            ) from e
+        except Exception as e:
+            logger.exception(e)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Error encoding text: {e}",
+            )
+
+    logger.debug(f"Upserting point {request.id}")
+    try:
+        await collection.upsert(request.id, request.embedding, request.metadata)
+    except Exception as e:
+        logger.exception(e)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error upserting point: {e}",
+        )
+    return request
+
+
 @router.delete(
     "/{collection_name}/delete/{point_id}",
     name="delete_point",
