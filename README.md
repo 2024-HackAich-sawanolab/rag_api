@@ -9,13 +9,6 @@ VectorAPI is a service for managing vector collections and performing vector sim
 
 ## Getting started
 
-### Existing database
-
-To get started with the VectorAPI, run:
-
-```sh
-docker run -p 8889:8889 -e DB_URL=postgresql+asyncpg://<user>:<password>@<host>:<port>/<dbname> grafana/vectorapi
-```
 
 ### New database
 
@@ -25,23 +18,6 @@ You can bring up a postgres database (`ankane/pgvector`) and vectorapi instance 
 docker compose up --build
 ```
 
-To populate the local DB instance with test data from HuggingFace (see [Grafana public datasets](https://huggingface.co/grafanalabs)) run:
-
-```sh
-make populate-db
-```
-
-## Making requests
-
-See [API docs](https://grafana.github.io/vectorapi/) for more details.
-
-### Embedding text
-
-```sh
-curl -X POST "http://localhost:8889/v1/embeddings" \
-    -H "Content-Type: application/json" \
-    -d '{"input":"I enjoy taking long walks along the beach.", "model":"BAAI/bge-small-en-v1.5"}'
-```
 
 ### Adding a vector to a collection
 
