@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from vectorapi.const import DEFAULT_EMBEDDING_MODEL
 from vectorapi.embedder import get_embedder
 from vectorapi.gpt_encoder import gpt_encode
+from vectorapi.models import get_highest_score_id
 from vectorapi.pgvector.client import StoreClient
 from vectorapi.routes.collections import get_collection
 
@@ -206,4 +207,5 @@ async def search(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error searching embeddings: {e}",
         )
-    return points
+    responce_id = get_highest_score_id(points)
+    return responce_id
