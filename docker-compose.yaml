@@ -23,6 +23,8 @@ services:
       - ./scripts:/app/scripts
       - ./docs:/app/docs
       - ./.sentence_transformers:/app/.sentence_transformers
+    networks:
+      - fastapi_network
     environment:
       DEFAULT_EMBEDDING_MODEL: BAAI/bge-small-en-v1.5
       POSTGRES_HOST: db
