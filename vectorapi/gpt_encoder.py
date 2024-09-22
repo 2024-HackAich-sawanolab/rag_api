@@ -10,9 +10,8 @@ def gpt_encode(text: str) -> str:
     openai_api_key = os.environ.get('OPENAI_API_KEY')
 
     client = openai.Client()
-    # envの一覧を表示
     client.api_key = openai_api_key
-    prompts = 'あなたはRAGに入れるためのベクトルデータ作成の仕事をしています．これから入力する文章に関して重要であるキーワードを抜き出してください．また，キーワード以外の文章を出力で表示しないでください．\n入力: ' + text
+    prompts = 'You are working on vector data for inclusion in a RAG. Please be sure to extract keywords in English that are important to the text you are about to input. Do not display any text other than the keywords in the output. \nInput:' + text
     print("prompts ", prompts)
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
